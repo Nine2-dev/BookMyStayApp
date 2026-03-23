@@ -1,30 +1,31 @@
-abstract class UC2 {
+import java.util.Map;
 
-    /** Number of beds available in the room */
-    protected int numberOfBeds;
+public class UC3{
 
-    /** Total size of the room in square feet */
-    protected int squareFeet;
+    public static void main(String[] args) {
 
-    /** Price charged per night for this room type */
-    protected double pricePerNight;
+        // Create inventory object
+        RoomInventory inventory = new RoomInventory();
 
-    /**
-     * Constructor used by child classes
-     */
-    public Room(int numberOfBeds, int squareFeet, double pricePerNight) {
-        this.numberOfBeds = numberOfBeds;
-        this.squareFeet = squareFeet;
-        this.pricePerNight = pricePerNight;
+        // Display initial availability
+        System.out.println("Initial Room Availability:");
+        displayInventory(inventory.getRoomAvailability());
+
+        // Update availability
+        System.out.println("\nUpdating Room Availability...");
+        inventory.updateAvailability("Single", 8);
+        inventory.updateAvailability("Double", 5);
+        inventory.updateAvailability("Suite", 2);
+
+        // Display updated availability
+        System.out.println("\nUpdated Room Availability:");
+        displayInventory(inventory.getRoomAvailability());
     }
 
-    /**
-     * Displays room details
-     */
-    public void displayRoomDetails() {
-        System.out.println("Room Details:");
-        System.out.println("Beds: " + numberOfBeds);
-        System.out.println("Size: " + squareFeet + " sq ft");
-        System.out.println("Price per night: $" + pricePerNight);
+    // Helper method to print inventory
+    private static void displayInventory(Map<String, Integer> inventoryMap) {
+        for (Map.Entry<String, Integer> entry : inventoryMap.entrySet()) {
+            System.out.println(entry.getKey() + " Rooms: " + entry.getValue());
+        }
     }
 }
