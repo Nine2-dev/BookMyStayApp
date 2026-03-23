@@ -1,92 +1,106 @@
-import java.util.*;
-public class UC6 {
+public class AddOnService {
 
-    private Set<String> allocatedRoomIds;
-    private Map<String, Set<String>> assignedRoomsByType;
+    private String serviceName;
+    private double cost;
 
-    public RoomAllocationService() {
-        allocatedRoomIds = new HashSet<>();
-        assignedRoomsByType = new HashMap<>();
+    public AddOnService(String serviceName, double cost) {
+        this.serviceName = serviceName;
+        this.cost = cost;
     }
 
-    public void allocateRoom(Reservation reservation, RoomInventory inventory) {
+    public String getServiceName() {
+        return serviceName;
+    }
 
-        String roomType = reservation.getRoomType();
-        Map<String, Integer> availability = inventory.getRoomAvailability();
+    public double getCost() {
+        return cost;
+    }
+}
 
-        // Check availability
-        if (availability.get(roomType) == null || availability.get(roomType) <= 0) {
-            System.out.println("No rooms available for " + roomType + " for guest " + reservation.getGuestName());
+import java.util.*;
+
+public class AddOnServiceManager {
+
+    private Map<String, List<AddOnService>> servicesByReservation;
+
+    public AddOnServiceManager() {
+        servicesByReservation = new HashMap<>();
+    }
+
+    public void addService(String reservationId, AddOnService service) {
+        servicesByReservation.putIfAbsent(reservationId, new ArrayList<>());
+        servicesByReservation.get(reservationId).add(service);
+    }
+
+    public double calculateTotalServiceCost(String reservationId) {
+        List<AddOnService> services = servicesByReservation.get(reservationId);
+
+        if (services == null) {
+            return 0.0;
+        }
+
+        double total = 0;
+        for (AddOnService service : services) {
+            total += service.getCost();
+        }
+        return total;
+    }
+
+    public void displayServices(String reservationId) {
+        List<AddOnService> services = servicesByReservation.get(reservationId);
+
+        if (services == null || services.isEmpty()) {
+            System.out.println("No add-on services selected.");
             return;
         }
 
-        // Generate unique room ID
-        String roomId = generateRoomId(roomType);
-
-        // Track allocated IDs
-        allocatedRoomIds.add(roomId);
-
-        // Track rooms by type
-        assignedRoomsByType.putIfAbsent(roomType, new HashSet<>());
-        assignedRoomsByType.get(roomType).add(roomId);
-
-        // Update inventory (reduce count)
-        inventory.updateAvailability(roomType, availability.get(roomType) - 1);
-
-        // Confirmation message
-        System.out.println("Booking Confirmed!");
-        System.out.println("Guest: " + reservation.getGuestName());
-        System.out.println("Room Type: " + roomType);
-        System.out.println("Allocated Room ID: " + roomId);
-        System.out.println("-----------------------------");
-    }
-
-    private String generateRoomId(String roomType) {
-        String prefix = roomType.substring(0, 1).toUpperCase();
-        int number = allocatedRoomIds.size() + 1;
-
-        String roomId = prefix + number;
-
-        // Ensure uniqueness
-        while (allocatedRoomIds.contains(roomId)) {
-            number++;
-            roomId = prefix + number;
+        System.out.println("Services for Reservation ID: " + reservationId);
+        for (AddOnService service : services) {
+            System.out.println("- " + service.getServiceName() + " : " + service.getCost());
         }
-
-        return roomId;
     }
 }
-public class UC6 {
 
-    public static void main(String[] args) {
+import java.util.*;
 
-        System.out.println("Room Allocation System\n");
+public class AddOnServiceManager {
 
-        // Initialize inventory
-        RoomInventory inventory = new RoomInventory();
+    private Map<String, List<AddOnService>> servicesByReservation;
 
-        // Initialize booking queue (FIFO)
-        BookingRequestQueue queue = new BookingRequestQueue();
+    public AddOnServiceManager() {
+        servicesByReservation = new HashMap<>();
+    }
 
-        // Add booking requests
-        queue.addRequest(new Reservation("Abhi", "Single"));
-        queue.addRequest(new Reservation("Subha", "Double"));
-        queue.addRequest(new Reservation("Vanmathi", "Suite"));
-        queue.addRequest(new Reservation("Kumar", "Single"));
+    public void addService(String reservationId, AddOnService service) {
+        servicesByReservation.putIfAbsent(reservationId, new ArrayList<>());
+        servicesByReservation.get(reservationId).add(service);
+    }
 
-        // Allocation service
-        RoomAllocationService allocator = new RoomAllocationService();
+    public double calculateTotalServiceCost(String reservationId) {
+        List<AddOnService> services = servicesByReservation.get(reservationId);
 
-        // Process queue
-        while (queue.hasPendingRequests()) {
-            Reservation request = queue.getNextRequest();
-            allocator.allocateRoom(request, inventory);
+        if (services == null) {
+            return 0.0;
         }
 
-        // Final inventory status
-        System.out.println("\nRemaining Room Availability:");
-        inventory.getRoomAvailability().forEach((type, count) ->
-                System.out.println(type + ": " + count)
-        );
+        double total = 0;
+        for (AddOnService service : services) {
+            total += service.getCost();
+        }
+        return total;
+    }
+
+    public void displayServices(String reservationId) {
+        List<AddOnService> services = servicesByReservation.get(reservationId);
+
+        if (services == null || services.isEmpty()) {
+            System.out.println("No add-on services selected.");
+            return;
+        }
+
+        System.out.println("Services for Reservation ID: " + reservationId);
+        for (AddOnService service : services) {
+            System.out.println("- " + service.getServiceName() + " : " + service.getCost());
+        }
     }
 }
