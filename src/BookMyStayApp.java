@@ -1,31 +1,37 @@
 import java.util.Map;
+public class UC4 {
 
-public class UC3{
+    public void searchAvailableRooms(
+            RoomInventory inventory,
+            Room singleRoom,
+            Room doubleRoom,
+            Room suiteRoom) {
 
-    public static void main(String[] args) {
+        Map<String, Integer> availability = inventory.getRoomAvailability();
 
-        // Create inventory object
-        RoomInventory inventory = new RoomInventory();
+        // Check and display Single Room availability
+        if (availability.get("Single") > 0) {
+            System.out.println("Single Room Available:");
+            displayRoom(singleRoom, availability.get("Single"));
+        }
 
-        // Display initial availability
-        System.out.println("Initial Room Availability:");
-        displayInventory(inventory.getRoomAvailability());
+        // Check and display Double Room availability
+        if (availability.get("Double") > 0) {
+            System.out.println("\nDouble Room Available:");
+            displayRoom(doubleRoom, availability.get("Double"));
+        }
 
-        // Update availability
-        System.out.println("\nUpdating Room Availability...");
-        inventory.updateAvailability("Single", 8);
-        inventory.updateAvailability("Double", 5);
-        inventory.updateAvailability("Suite", 2);
-
-        // Display updated availability
-        System.out.println("\nUpdated Room Availability:");
-        displayInventory(inventory.getRoomAvailability());
+        // Check and display Suite Room availability
+        if (availability.get("Suite") > 0) {
+            System.out.println("\nSuite Room Available:");
+            displayRoom(suiteRoom, availability.get("Suite"));
+        }
     }
 
-    // Helper method to print inventory
-    private static void displayInventory(Map<String, Integer> inventoryMap) {
-        for (Map.Entry<String, Integer> entry : inventoryMap.entrySet()) {
-            System.out.println(entry.getKey() + " Rooms: " + entry.getValue());
-        }
+    private void displayRoom(Room room, int count) {
+        System.out.println("Type: " + room.getType());
+        System.out.println("Price: " + room.getPrice());
+        System.out.println("Features: " + room.getFeatures());
+        System.out.println("Available Count: " + count);
     }
 }
